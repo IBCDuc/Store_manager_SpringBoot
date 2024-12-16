@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.SupplierDTO;
 import com.example.demo.entity.Supplier;
 
 import java.util.LinkedHashMap;
@@ -31,8 +32,11 @@ public class SupplierController {
 
 
     @GetMapping
-    public List<Supplier> getAllProducts() {
-        return supplierService.findAllSupplier();
+    public SupplierDTO getAllProducts() {
+
+        List<Supplier> suppliers = supplierService.findAllSupplier();
+        long total = suppliers.size();
+        return new SupplierDTO(suppliers, total);
     }
 
     @PostMapping("/save")

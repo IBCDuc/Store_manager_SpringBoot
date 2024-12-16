@@ -14,9 +14,6 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Orders, Integer> {
     
-    // @Query(value = "SELECT id FROM orders WHERE user_id = ?1 ", nativeQuery = true )
-    // List<Orders> checkOrder(Integer id);
-
     @Query(value = "SELECT * FROM orders WHERE user_id = ?1 ", nativeQuery = true )
     List<Orders> checkOrder(Integer id);
 

@@ -14,20 +14,20 @@ public class UserService {
     private UserRepository userRepository;
     
 
-    // Lấy tất cả người dùng
+    
     public List<Users> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAllUsers();
     }
     public List<Users> findAllAdmin() {
         return userRepository.findAllAdmin();
     }
 
-    // Tìm người dùng theo ID
+   
     public Users findById(Integer id) {
         return userRepository.findById(id).get();
     }
 
-    // Thêm người dùng
+   
     public Users save(Users user) {
         return userRepository.save(user);
     }
@@ -49,7 +49,7 @@ public class UserService {
         }
     }
 
-    public Users findAdminById(String email, String password) {
+    public List<Users> findAdminById(String email, String password) {
         try {
             return userRepository.findAdminByEmail(email, password);
         } catch(Exception ex) {

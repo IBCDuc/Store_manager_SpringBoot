@@ -15,9 +15,11 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
     Users findUserByEmail(String email);
 
     @Query(value= "SELECT * FROM users WHERE email = ?1 AND password = ?2 AND role = 1", nativeQuery = true)
-    Users findAdminByEmail(String email, String password);
+    List<Users> findAdminByEmail(String email, String password);
 
     @Query(value = "SELECT * FROM users WHERE role = 1", nativeQuery = true)
     List<Users> findAllAdmin();
 
+    @Query(value = "SELECT * FROM users WHERE role != 1 or role is NULL", nativeQuery = true)
+    List<Users> findAllUsers();
 }

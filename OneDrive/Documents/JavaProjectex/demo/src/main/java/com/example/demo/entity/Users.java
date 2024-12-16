@@ -30,6 +30,9 @@ public class Users {
     @Column(name = "role") 
     private Boolean role; 
 
+    @Column(name = "base_role",nullable = false, length = 100 )
+    private String base_role;
+
     @OneToMany(mappedBy = "user")
     private List<Orders> orders;
 
@@ -83,5 +86,14 @@ public class Users {
 
     public void setRole(Boolean role) {
         this.role = role;
+    }
+
+    
+    public String getBaseRole() {
+        return base_role;
+    }
+
+    public void setBaseRole(String base_role) {
+        this.base_role = base_role;
     }
 }

@@ -1,0 +1,275 @@
+openapi: 3.0.3
+info:
+  title: Order Management API
+  description: API for managing orders, carts, and pricing.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Local API server
+
+paths:
+  /addCart:
+    post:
+      summary: Add a product to the cart
+      operationId: addCart
+      requestBody:
+        description: Product ID to add to the cart
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The product ID to add to the cart
+                  example: 4
+      responses:
+        '200':
+          description: Product added to cart successfully
+        '400':
+          description: Bad request
+
+  /order/addInCart:
+    post:
+      summary: Add a product to an order in the cart
+      operationId: addInCart
+      requestBody:
+        description: Add product to an existing order in cart
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: The quantity of the product to add
+                  example: 3
+                product_id:
+                  type: integer
+                  description: The product ID to add
+                  example: 3
+                order_id:
+                  type: integer
+                  description: The order ID to add the product to
+                  example: 1
+      responses:
+        '200':
+          description: Product added to the order in cart
+        '400':
+          description: Bad request
+
+  /order/all:
+    get:
+      summary: Get all orders
+      operationId: getAllOrders
+      responses:
+        '200':
+          description: List of all orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        orderId:
+                          type: integer
+                          example: 1
+                        orderDate:
+                          type: string
+                          format: date
+                          example: "2024-11-03"
+                        orderStatus:
+                          type: string
+                          example: "Completed"
+                        customerId:
+                          type: integer
+                          example: 1
+                        customerName:
+                          type: string
+                          example: "duc234"
+                        customerEmail:
+                          type: string
+                          example: "1@gmail.com"
+                        totalAmount:
+                          type: integer
+                          example: 240000
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              productId:
+                                type: integer
+                                example: 3
+                              productName:
+                                type: string
+                                example: "banana"
+                              productPrice:
+                                type: integer
+                                example: 10000
+                              quantity:
+                                type: integer
+                                example: 12
+        '500':
+          description: Internal server error
+
+  /order/price:
+    post:
+      summary: Calculate the price of an order
+      operationId: calculateOrderPrice
+      requestBody:
+        description: Order details to calculate price
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Price calculated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalAmount:
+                    type: integer
+                    example: 240000
+        '400':
+          description: Bad request
+
+  /order/save:
+    post:
+      summary: Save an order
+      operationId: saveOrder
+      requestBody:
+        description: Order details to save
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderDate:
+                  type: string
+                  format: date
+                  example: "2024-11-03"
+                orderStatus:
+                  type: string
+                  example: "Completed"
+                customerId:
+                  type: integer
+                  example: 1
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                        example: 3
+                      quantity:
+                        type: integer
+                        example: 12
+      responses:
+        '201':
+          description: Order saved successfully
+        '400':
+          description: Bad request
+
+  /manager/orders:
+    get:
+      summary: Get orders for manager
+      operationId: getManagerOrders
+      responses:
+        '200':
+          description: List of orders for manager
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        orderId:
+                          type: integer
+                          example: 1
+                        orderDate:
+                          type: string
+                          format: date
+                          example: "2024-11-03"
+                        orderStatus:
+                          type: string
+                          example: "Completed"
+                        totalAmount:
+                          type: integer
+                          example: 240000
+        '500':
+          description: Internal server error
+
+  /order/status:
+    get:
+      summary: Get status of all orders
+      operationId: getOrderStatus
+      responses:
+        '200':
+          description: Order status summary
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    orderStatus:
+                      type: string
+                      example: "Completed"
+                    orderCount:
+                      type: integer
+                      example: 6
+                    totalQuantity:
+                      type: integer
+                      example: 80
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        orderId:
+          type: integer
+        orderDate:
+          type: string
+          format: date
+        orderStatus:
+          type: string
+        customerId:
+          type: integer
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        totalAmount:
+          type: integer
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: integer
+              productName:
+                type: string
+              productPrice:
+                type: integer
+              quantity:
+                type: integer

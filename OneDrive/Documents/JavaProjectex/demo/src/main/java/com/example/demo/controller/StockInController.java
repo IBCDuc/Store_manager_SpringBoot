@@ -75,7 +75,7 @@ public class StockInController {
         LocalDate localDate = LocalDate.now();
 
         // Định dạng "yyyy/MM/dd"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        
         
         // Chuyển đổi thành java.sql.Date để lưu vào SQL
         Date sqlDate = Date.valueOf(localDate);
