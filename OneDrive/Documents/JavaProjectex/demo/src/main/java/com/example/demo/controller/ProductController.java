@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.InventoryDTO;
+import com.example.demo.DTO.InventorySummaryDTO;
 import com.example.demo.DTO.ProductsDTO;
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.entity.Products;
@@ -8,6 +10,7 @@ import com.example.demo.entity.Users;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.sql.*;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +51,17 @@ public class ProductController {
          ProductsDTO productsDTO = new ProductsDTO(products, products.size());
          return ResponseEntity.ok(productsDTO);
     }
-    
+    @GetMapping("/stock")
+    public InventorySummaryDTO getInventory(@RequestParam Date toDate) {
+        List<InventoryDTO> inventoryDTOs = productService.getInventory(toDate);
+        long total = inventoryDTOs.size();
+        return new InventorySummaryDTO(inventoryDTOs, total);
+    }
+
+
+
+ 
+
 
     @PostMapping("/save")
     public ResponseEntity<?> saveProduct(@RequestBody Products product) {

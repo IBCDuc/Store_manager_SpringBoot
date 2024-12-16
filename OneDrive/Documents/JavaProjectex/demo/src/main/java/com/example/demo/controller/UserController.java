@@ -65,8 +65,11 @@ public class UserController {
     @PostMapping("/validate/admin")
     public ResponseEntity<?> validateAdmin(@RequestBody Users users) {
         try {
-            Users user = userService.findAdminById(users.getEmail(), users.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(user);
+            List<Users> user = userService.findAdminById(users.getEmail(), users.getPassword());
+            if (user.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cant find staff pls try again");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(user.get(0));
         } catch(Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something err somewhere");
         }
