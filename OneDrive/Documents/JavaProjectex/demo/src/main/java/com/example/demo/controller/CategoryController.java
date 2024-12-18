@@ -1,7 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.UserDTO;
+import com.example.demo.DTO.CategoryDTO;
 import com.example.demo.entity.Category;
+import com.example.demo.entity.Products;
+import com.example.demo.entity.Users;
 import com.example.demo.service.CategoryService;
+import com.example.demo.service.ProductService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +24,14 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private ProductService productService;
     // Get all categories
     @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryService.findAll();
+    public CategoryDTO getAllCategory() {
+        List<Category> category = categoryService.findAll(); // Lấy danh sách người dùng
+        long total = category.size(); // Tổng số người dùng (hoặc lấy từ database)
+        return new CategoryDTO(category, total);
     }
 
     // Get category by ID
@@ -65,6 +75,18 @@ public class CategoryController {
             categoryService.deleteById(id);
             return ResponseEntity.ok(Map.of("message", "Category deleted successfully"));
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", "Category not found"));
+        }
+    }
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<?> addProductToCategory(@PathVariable Integer categoryId, @RequestBody Products product) {
+        Category category = categoryService.findById(categoryId);
+        if (category != null) {
+            // product.setCategory(category); // Liên kết sản phẩm với danh mục
+            Products savedProduct = productService.save(product); // Lưu sản phẩm
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("message", "Category not found"));
         }

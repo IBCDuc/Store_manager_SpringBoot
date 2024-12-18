@@ -4,6 +4,7 @@ import com.example.demo.DTO.InventoryDTO;
 import com.example.demo.DTO.InventorySummaryDTO;
 import com.example.demo.DTO.ProductsDTO;
 import com.example.demo.DTO.UserDTO;
+import com.example.demo.entity.Category;
 import com.example.demo.entity.Products;
 import com.example.demo.entity.Users;
 
@@ -15,6 +16,7 @@ import java.sql.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.service.CategoryService;
 import com.example.demo.service.ProductService;
 import org.springframework.http.HttpStatus;
 
@@ -37,6 +39,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/all")
     public ProductsDTO getAllUsers() {
@@ -58,24 +62,19 @@ public class ProductController {
         return new InventorySummaryDTO(inventoryDTOs, total);
     }
 
-
-
- 
-
-
-    @PostMapping("/save")
-    public ResponseEntity<?> saveProduct(@RequestBody Products product) {
-        Map<String, Object> prodEnt = new LinkedHashMap<>();
-        try {
-            productService.save(product);      
-            prodEnt.put("message", "Successfully!");
-            return new ResponseEntity<>(prodEnt, HttpStatus.OK);
-        } catch (Exception ex) {
-            prodEnt.clear();
-            prodEnt.put("message", "Save Product Fail");
-            return new ResponseEntity<>(prodEnt, HttpStatus.NOT_FOUND);
+    @PostMapping("/category/{categoryId}/save")
+        public ResponseEntity<?> addProductToCategory(@PathVariable Integer categoryId, @RequestBody Products product) {
+            Category category = categoryService.findById(categoryId);
+            product.setCategoryId(categoryId);
+            if (category != null) {
+                // product.setCategory(category); // Liên kết sản phẩm với danh mục
+                Products savedProduct = productService.save(product); // Lưu sản phẩm
+                return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Category not found"));
+            }
         }
-    }
     
     @PutMapping("update/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable int id, @RequestBody String entity) {
